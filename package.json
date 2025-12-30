@@ -1,0 +1,22 @@
+{
+  "name": "@taber-miyauchi/validator-schemas",
+  "version": "0.1.0",
+  "description": "Validator implementations for common data types",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["validator", "email", "phone", "url", "typescript", "scip"],
+  "author": "taber-miyauchi",
+  "license": "MIT",
+  "dependencies": {
+    "@taber-miyauchi/validator-core": "0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "files": ["dist"]
+}
