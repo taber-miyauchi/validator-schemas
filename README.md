@@ -1,61 +1,64 @@
-# @taber-miyauchi/validator-schemas
+# validator-schemas
 
-Validator implementations for common data types. Part of the cross-repository SCIP navigation demo.
+## Project Structure
 
-## Installation
-
-```bash
-npm install @taber-miyauchi/validator-schemas
+```
+├── validator-core/           ← The foundation
+│   ├── package.json
+│   ├── src/
+│   │   ├── index.ts          ← Re-exports all types
+│   │   ├── types.ts          ← ValidationResult, ValidationError
+│   │   └── validator.ts      ← Validator<T> interface
+│   └── README.md
+│
+├── validator-schemas/        ← Implementation (you are here)
+│   ├── package.json          ← depends on validator-core
+│   ├── src/
+│   │   ├── email-validator.ts    ← EmailValidator implements Validator
+│   │   ├── phone-validator.ts    ← PhoneValidator implements Validator
+│   │   └── url-validator.ts      ← URLValidator implements Validator
+│   └── README.md
+│
+└── validator-service/        ← Consumer/API
+    ├── package.json          ← depends on both
+    ├── src/
+    │   ├── index.ts          ← Express server using validators
+    │   └── middleware.ts     ← Generic validation middleware
+    └── README.md
 ```
 
-## Usage
+## Overview
 
-```typescript
-import { EmailValidator, PhoneValidator, URLValidator } from '@taber-miyauchi/validator-schemas';
+Concrete validator implementations for common data types. Each class implements the `Validator<T>` interface from `validator-core`.
 
-const emailValidator = new EmailValidator();
-const result = emailValidator.validate('user@example.com');
+## Types
 
-if (result.valid) {
-  console.log('Valid email:', result.value);
-} else {
-  console.log('Errors:', result.errors);
-}
-```
-
-## Validators
-
-| Class | Validates | Example |
-|-------|-----------|---------|
-| `EmailValidator` | Email addresses | `user@example.com` |
-| `PhoneValidator` | Phone numbers | `+1-555-123-4567` |
-| `URLValidator` | URLs | `https://example.com` |
+- **`EmailValidator`** - Validates email addresses using regex pattern matching
+- **`PhoneValidator`** - Validates phone numbers (international format support)
+- **`URLValidator`** - Validates URLs using the built-in `URL` constructor
 
 ## Dependencies
 
-- `@taber-miyauchi/validator-core` — Core interfaces (`Validator<T>`, `ValidationResult`, `ValidationError`)
+- `@taber-miyauchi/validator-core` - For `Validator<T>` interface, `ValidationResult`, and `ValidationError` types
 
 ## Testing Precise Code Navigation
 
-After SCIP indexing, test these navigation features in Sourcegraph:
+Open this repo in Sourcegraph and try the following:
 
-### Go to Definition
-- Click on `Validator<string>` → should jump to `validator-core`
-- Click on `ValidationResult` → should jump to `validator-core`
+### 1. Go to Definition (cross-repo type)
 
-### Find References
-- Click on `EmailValidator` → should show usages in `validator-service`
+Jump from a type usage to its definition in another repository.
 
-### Find Implementations
-- From `validator-core`, click "Find Implementations" on `Validator<T>` → should show `EmailValidator`, `PhoneValidator`, `URLValidator`
+- In `email-validator.ts`, click on `ValidationResult` (line 9) → **Go to Definition**
+- → Highlights `ValidationResult` interface (line 14) in `validator-core/src/types.ts`
 
-## Development
+**Benefit:** Navigate directly from your implementation to the shared types you depend on - to understand the contract without leaving your editor or manually searching another repo.
 
-```bash
-npm install
-npm run build
-```
+### 2. Find References (cross-repo class)
 
-## License
+Locate all usages of an exported class across repository boundaries.
 
-MIT
+- In `email-validator.ts`, click on `EmailValidator` class (line 8) → **Find References**
+- → Highlights `EmailValidator` (line 9) usage in `validator-service/src/index.ts`
+
+**Benefit:** See exactly which services consume your implementation—essential for gauging adoption and planning breaking changes to your API.
